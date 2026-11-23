@@ -1,0 +1,30 @@
+# The client's own analysis, sharing nothing with the application's config.
+#
+# Two passes, because one cannot do both jobs:
+#
+#   phpstan.neon        src/ and command.php, analysed AS PHP 7.4 on any
+#                       runtime, so a PHP 8 function or syntax in shipped code
+#                       fails here and not only on the floor CI leg.
+#   phpstan-tests.neon  tests/, analysed as whatever PHP is running. PHPUnit 12
+#                       is PHP 8.3 code, and PHPStan told to read it as 7.4
+#                       cannot reflect TestCase at all -- every assertion
+#                       becomes "undefined method". On the 7.4 floor leg the
+#                       runtime IS 7.4 and PHPUnit is 9.6, so the tests are
+#                       still analysed against the floor there.
+#
+# The stubs stand in for WordPress and WP-CLI, which exist only at run time:
+# neither is a dependency of this package (docs/ingest-clients.md §7).
+parameters:
+    level: 6
+    phpVersion: 70400
+
+    tmpDir: .phpstan
+
+    paths:
+        - src
+        - command.php
+
+    scanFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php

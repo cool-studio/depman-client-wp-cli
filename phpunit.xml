@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Standalone by design, and deliberately minimal: the same file has to drive
+    PHPUnit 9.6 on the PHP 7.4 floor and PHPUnit 12 on current PHP, so it uses
+    only attributes both understand. Tests carry their data providers twice for
+    the same reason: a #[DataProvider] attribute (10+, a comment on 7.4) and
+    an @dataProvider tag (9.6). See docs/ingest-clients.md §12.
+-->
+<phpunit bootstrap="vendor/autoload.php"
+         colors="true"
+         failOnWarning="true"
+         failOnRisky="true"
+>
+    <testsuites>
+        <testsuite name="client">
+            <directory>tests</directory>
+            <exclude>tests/Smoke</exclude>
+        </testsuite>
+        <!--
+            Installs the dist archive into a scratch project and runs it
+            (ADR-0055). `composer check` runs both suites.
+        -->
+        <testsuite name="smoke">
+            <directory>tests/Smoke</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

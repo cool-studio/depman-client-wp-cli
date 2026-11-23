@@ -1,0 +1,27 @@
+# The test suite's analysis. See phpstan.neon for why this is a second pass.
+parameters:
+    level: 6
+
+    tmpDir: .phpstan
+
+    paths:
+        - tests
+
+    scanFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
+
+    # Each data provider is declared twice: an @dataProvider tag for PHPUnit
+    # 9.6 on the 7.4 floor, and a #[DataProvider] attribute for PHPUnit 10+,
+    # which no longer reads tags. On the floor leg PHPUnit 9.6 is installed and
+    # the attribute class does not exist; PHP 7.4 parses the attribute as a
+    # comment, so nothing is wrong, but PHPStan analyses for the package's whole
+    # PHP range and reports the class missing. This one class, nothing wider.
+    # It is unmatched on current PHP, where the class exists, hence the second
+    # setting.
+    ignoreErrors:
+        -
+            identifier: attribute.notFound
+            message: '#^Attribute class PHPUnit\\Framework\\Attributes\\DataProvider does not exist\.$#'
+    reportUnmatchedIgnoredErrors: false

@@ -1,0 +1,13 @@
+# Keeps the published dist archive to what a consumer actually installs. WP-CLI
+# installs this package into ~/.wp-cli/packages on the server, and that is not
+# the place for our test suite or our linter config.
+#
+# Affects `composer archive` and dist downloads only -- a clone of the mirror
+# still carries everything, because a client that cannot be tested standing
+# alone is not a client anyone can release (docs/ingest-clients.md §12).
+/tests            export-ignore
+/phpunit.xml      export-ignore
+/phpstan.neon     export-ignore
+/phpstan-tests.neon export-ignore
+/pint.json        export-ignore
+/.gitattributes   export-ignore
