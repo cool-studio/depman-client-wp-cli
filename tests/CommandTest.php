@@ -195,7 +195,7 @@ class CommandTest extends TestCase
      */
     private function command(RecordingReporter $reporter, array $extra = []): Command
     {
-        return new Command($this->reader(), $this->reporters($reporter), $this->out(), $this->root, $this->env() + $extra);
+        return new Command($this->reader(), $this->reporters($reporter), $this->out(), $this->root, array_merge($this->env(), $extra));
     }
 
     /**
@@ -209,6 +209,16 @@ class CommandTest extends TestCase
             // Keeps the default spool, which lives under the home directory,
             // inside this test's own scratch directory.
             'HOME' => $this->root.'/home',
+            // Set, not inherited: the command falls back to the process
+            // environment for these, and a CI runner sets CI=true -- which
+            // turned `manual` into `ci` on the first CI run (§13: set what
+            // you assert on).
+            'CI' => '',
+            'GITHUB_ACTIONS' => '',
+            'GITLAB_CI' => '',
+            'BUILDKITE' => '',
+            'CIRCLECI' => '',
+            'JENKINS_URL' => '',
         ];
     }
 
