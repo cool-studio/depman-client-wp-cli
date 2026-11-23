@@ -56,6 +56,16 @@ final class Command
             return new Reporter($logger);
         };
         $this->out = $out ?? static function (string $line): void {
+            // WP_CLI::log, not a raw write: it honours --quiet, and the
+            // documented crontab line passes --quiet so that cron does not
+            // mail the site owner a status line every six hours. Warnings and
+            // errors go to stderr through Logger and still arrive.
+            if (class_exists('WP_CLI', false)) {
+                WP_CLI::log(rtrim($line, "\n"));
+
+                return;
+            }
+
             fwrite(STDOUT, $line);
         };
         $this->root = $root;
